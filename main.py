@@ -8,13 +8,46 @@ import pandas as pd
 
 github_user = input("Input Github Username: ")
 
+print(f"Github Profile Link : https://github.com/{github_user}")
+
 r = requests.get(f"https://github.com/{github_user}")
 
 soup = BeautifulSoup(r.content, 'html.parser')
 
+# Profile image link
+
 profile_image_link = soup.select_one(selector=".avatar-user")["src"]
 
 print(f"Profile Image Link : {profile_image_link}")
+
+
+# Profile Bio
+
+profile_bio = soup.select_one(selector=".user-profile-bio")
+
+print(f"Profile Bio : {profile_bio.get_text()}")
+
+# Profile Location
+
+
+try:
+    location = soup.select_one(selector=".p-label")
+
+    print(f"Profile Location : {location.get_text()}")
+except:
+    print(f"Profile Location Not Given")
+
+try:
+    website = soup.select(selector=".Link--primary")
+except:
+    print("Profile social link Not Exist")
+else:
+    for i in website[:2]:
+        if "achievements" not in i.get('href'):
+            try:
+                print(f"Profile social link : {i.get('href')}")
+            except:
+                pass
 
 project_name = []
 project_link = []
